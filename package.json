@@ -9,11 +9,9 @@
   "author": "Elihu",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.21.1",
     "discord.js": "^12.5.3",
     "moment": "^2.29.1",
     "package.json": "^2.0.1",
     "rss-feed-emitter": "^3.2.2"
   }
-
 }
