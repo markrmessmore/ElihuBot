@@ -3,11 +3,11 @@ const { Client, EmbedBuilder, GatewayIntentBits } = require('discord.js'),
       moment                        = require('moment'),
       RssFeedEmitter                = require('rss-feed-emitter'),
       settings                      = {
-            botId             : "297735820788629524", //LISTED IN DISCORD AS APPLICATION ID
+            botId             : "", //LISTED IN DISCORD AS APPLICATION ID
             botName           : "Elihu's RSS Bot",
-            discordToken      : "Mjk3NzM1ODIwNzg4NjI5NTI0.GH5hgZ.Df4VUQ-QMYdPFREidLHAL1cdhjEgr0NFGD0aN0",
-            guildID           : "283038901579284480",
-            guildChannel      : "789933126817546251",
+            discordToken      : "",
+            guildID           : "",
+            guildChannel      : "",
             refreshInterval   : 30000, //IN MS - FOR MORE INFO SEE https://github.com/filipedeschamps/rss-feed-emitter
             //WARNING - POLLING TOO OFTEN MAY LEAD TO YOU BEING BLOCKED FROM SOME SITES/SERVICES.
       }
