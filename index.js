@@ -1,6 +1,6 @@
-const { Client, EmbedBuilder, GatewayIntentBits } = require('discord.js'),
+const { Client, GatewayIntentBits } = require('discord.js'),
       discordClient                 = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent ]}),
-      moment                        = require('moment'),
+      messageHandler                = require('./messageHandler.js'),
       RssFeedEmitter                = require('rss-feed-emitter'),
       settings                      = {
             botId             : "", //LISTED IN DISCORD AS APPLICATION ID
@@ -8,6 +8,7 @@ const { Client, EmbedBuilder, GatewayIntentBits } = require('discord.js'),
             discordToken      : "",
             guildID           : "",
             guildChannel      : "",
+            messageColor      : "#bb0000",
             refreshInterval   : 30000, //IN MS - FOR MORE INFO SEE https://github.com/filipedeschamps/rss-feed-emitter
             //WARNING - POLLING TOO OFTEN MAY LEAD TO YOU BEING BLOCKED FROM SOME SITES/SERVICES.
       }
@@ -24,6 +25,7 @@ discordClient.on('ready', () => {
                   url: 'https://lorem-rss.herokuapp.com/feed'
             }
       )
+      // DUPLICATE RSS FEED SETUP, READY FOR YOUR USE
       // rssListener2(
       //       {
       //             img: "https://i.picsum.photos/id/1012/3973/2639.jpg?hmac=s2eybz51lnKy2ZHkE2wsgc6S81fVD1W2NKYOSh8bzDc",
@@ -31,42 +33,6 @@ discordClient.on('ready', () => {
       //       }
       // )
 });
-
-// DISCORD MESSAGE FUNCTION
-const discordMessage = (msg) => {
-    let titles      = new Set()
-    let limitDate   = moment().subtract(7, 'days')
-    let dChannel    = discordClient.channels.cache.get(settings.guildChannel)
-    //IF THE DATE OF THE POST IS LESS THAN 7 DAYS OLD...REVIEW
-    if (limitDate < moment(msg.date, "ddd MMM DD YYYY")){
-      //GATHER THE LAST 100 POSTS FROM THE CHANNEL POSTED BY THE BOT
-            dChannel.messages.fetch({limit: 100})
-            .then(res => {
-                  // SELECT ONLY MESSAGES POSTED BY THE BOT (IN CASE ANY OTHER MESSAGES ARE POSTED IN THIS CHANNEL), THEN ADD THEM TO THE SET
-                  return res.forEach(m => {
-                        if (m.author.id === settings.botId && m.embeds.length > 0){
-                              titles.add(m.embeds[0].title)
-                        }
-                  })
-            })
-            .then(() => {
-                  //NOW THAT WE HAVE ALL THE TITLES IN THE SET, WE CHECK IF THIS TITLE IS PRESENT. IF IT IS NOT, WE SEND IT TO THE CHANNEL. THIS HELPS PREVENT DUPLCIATE POSTS
-                  if (!titles.has(msg.title)) {
-                        console.log(msg.title, msg.date)
-                        let rssEmbed = new EmbedBuilder()
-                              .setColor('#bb0000')
-                              .setTitle(msg.title)
-                              .setThumbnail(msg.img)
-                              .addFields(
-                                    {name: "Link:", value: msg.link},
-                                    {name: "Published:", value: msg.date, inline: true}
-                              )
-                        dChannel.send({embeds: [rssEmbed]})
-                  }
-            })
-            .catch(err => console.log(err))
-      }
-}
 
 // RSS FEED
 const rssListener1 = (rssData) => {
@@ -79,17 +45,17 @@ const rssListener1 = (rssData) => {
       });
     
       getRSS.on('new-item', item => {
-            let mappedItem =  {
+            let postDetails =  {
                   date  : item.date.toDateString(),
                   img   : rssData.img,
                   link  : item.link,
                   title : item.title
             }
-        discordMessage(mappedItem)
+        messageHandler.discordMessage(discordClient, postDetails, settings)
       })
 };
 
-// DUPLICATE RSS FEED, READY FOR YOUR USE
+// DUPLICATE RSS FEED SETUP, READY FOR YOUR USE
 // const rssListener2 = (rssData) => {
 //       let getRSS = new RssFeedEmitter({ skipFirstLoad: true })
 //       console.log("Listening for RSS Updates on feed two!")
@@ -106,6 +72,6 @@ const rssListener1 = (rssData) => {
 //                   link  : item.link,
 //                   title : item.title
 //             }
-//         discordMessage(mappedItem)
+//        messageHandler.discordMessage(mappedItem)
 //       })
 // };
