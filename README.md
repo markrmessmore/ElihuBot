@@ -39,7 +39,8 @@ GUILD_CHANNEL_ID=YOUR_GUILD_CHANNEL_ID
 ## Setup Discord Bot
 - Create a new application in the [Discord Developer Portal](https://discord.com/developers/applications).
 ![Discord Developer Portal](https://i.imgur.com/IESJttn.png)
-- Go to the bot tab and create a new bot.
+- Go to the bot tab and create a new bot. Also select all the privileged gateway intents for the bot.
+![Discord Bot](https://i.imgur.com/u6gSfCy.png)
 - Copy the bot token and paste it in the `.env` file in the `DISCORD_TOKEN` field.
 ![Discord Bot Token](https://i.imgur.com/1G8kQYX.png)
 - Go to the OAuth2 tab and select `bot` in the scopes section.
