@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config();
 const { Client, GatewayIntentBits } = require('discord.js'),
       discordClient                 = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent ]}),
       messageHandler                = require('./messageHandler.js'),
@@ -5,9 +7,9 @@ const { Client, GatewayIntentBits } = require('discord.js'),
       settings                      = {
             botId             : "", //LISTED IN DISCORD AS APPLICATION ID
             botName           : "Elihu's RSS Bot",
-            discordToken      : "",
-            guildID           : "",
-            guildChannel      : "",
+            discordToken      : process.env.DISCORD_TOKEN,
+            guildID           : process.env.GUILD_ID,
+            guildChannel      : process.env.GUILD_CHANNEL_ID,
             messageColor      : "#bb0000",
             refreshInterval   : 30000, //IN MS - FOR MORE INFO SEE https://github.com/filipedeschamps/rss-feed-emitter
             //WARNING - POLLING TOO OFTEN MAY LEAD TO YOU BEING BLOCKED FROM SOME SITES/SERVICES.
@@ -38,12 +40,12 @@ discordClient.on('ready', () => {
 const rssListener1 = (rssData) => {
       let getRSS = new RssFeedEmitter({ skipFirstLoad: true })
       console.log("Listening for RSS Updates!")
-    
+
       getRSS.add({
         url: rssData.url,
         refresh: settings.refreshInterval
       });
-    
+
       getRSS.on('new-item', item => {
             let postDetails =  {
                   date  : item.date.toDateString(),
@@ -59,12 +61,12 @@ const rssListener1 = (rssData) => {
 // const rssListener2 = (rssData) => {
 //       let getRSS = new RssFeedEmitter({ skipFirstLoad: true })
 //       console.log("Listening for RSS Updates on feed two!")
-    
+
 //       getRSS.add({
 //         url: rssData.url,
 //         refresh: settings.refreshInterval
 //       });
-    
+
 //       getRSS.on('new-item', item => {
 //             let mappedItem =  {
 //                   date  : item.date.toDateString(),
